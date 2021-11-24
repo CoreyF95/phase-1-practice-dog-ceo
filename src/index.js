@@ -1,9 +1,36 @@
 console.log('%c HI', 'color: firebrick')
 
+let breedArray = []
+
 document.addEventListener("DOMContentLoaded", () => {
     getDogImages();
     getDogBreeds();
-    filter();
+
+    const dropdown = document.getElementById("breed-dropdown");
+
+    dropdown.addEventListener("change", (e) => {
+        if (e.target.value === "a") {
+            let aList = breedArray.filter(dog => {
+                return dog.charAt(0) === "a"
+            })
+            renderList(aList);
+        } else if (e.target.value === "b") {
+            let bList = breedArray.filter(dog => {
+                return dog.charAt(0) === "b"
+            })
+            renderList(bList);
+        } else if (e.target.value === "c") {
+            let cList = breedArray.filter(dog => {
+                return dog.charAt(0) === "c"
+            })
+            renderList(cList);
+        } else if (e.target.value === "d") {
+            let dList = breedArray.filter(dog => {
+                return dog.charAt(0) === "d"
+            })
+            renderList(dList);
+        }
+    })
 })
 
 function getDogImages() {
@@ -27,35 +54,23 @@ function getDogBreeds() {
     fetch(breedUrl)
         .then(resp => resp.json())
         .then(results => {
-            const breeds = results.message;
-            const container = document.getElementById("dog-breeds");
-            for (const prop in breeds) {
-                const breed = document.createElement("li")
-                breed.textContent = (`${prop}` + ` ${breeds[prop]}`);
-                breed.class = breed.textContent.charAt(0)
-                container.appendChild(breed)
-                breed.addEventListener("click", () => {
-                    breed.style.color = "red"
-                })
-            };
-    })
+            renderList(Object.keys(results.message))
+            breedArray = Object.keys(results.message)
+        })
 }
 
 const breedList = document.getElementsByTagName("li");
 
-
-
-function filter() {
-    const dropdown = document.getElementById("breed-dropdown");
-    dropdown.addEventListener("select",() => {
-        if (dropdown.value === "a") {
-            aBreeds = document.getElementsByClassName("a")
-            document.getElementById("dog-breeds").removeChild(document.getElementsByTagName("li"));
-            document.getElementById("dog-breeds").appendChild(aBreeds)
-        }
+function renderList(breeds) {
+    const container = document.getElementById("dog-breeds");
+    container.innerHTML = ""
+    breeds.forEach(dog => {
+        const breed = document.createElement("li")
+        breed.textContent = dog;
+        breed.className = dog.charAt(0)
+        breed.addEventListener("click", () => {
+            breed.style.color = "red"
+        })
+        container.appendChild(breed)
     })
 }
-
-
-
-
